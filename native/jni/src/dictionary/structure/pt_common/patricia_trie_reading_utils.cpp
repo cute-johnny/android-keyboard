@@ -112,7 +112,8 @@ const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_IS_POSSIBLY_OFFENSIVE = 0x0
 }
 
 /* static */ int PtReadingUtils::readChildrenPositionAndAdvancePosition(
-        const uint8_t *const buffer, const NodeFlags flags, int *const pos) {
+        const uint8_t *const buffer, const NodeFlags flags, int *const pos,
+        const bool largeAddresses) {
     const int base = *pos;
     int offset = 0;
     switch (MASK_CHILDREN_POSITION_TYPE & flags) {
@@ -123,7 +124,9 @@ const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_IS_POSSIBLY_OFFENSIVE = 0x0
             offset = ByteArrayUtils::readUint16AndAdvancePosition(buffer, pos);
             break;
         case FLAG_CHILDREN_POSITION_TYPE_THREEBYTES:
-            offset = ByteArrayUtils::readUint24AndAdvancePosition(buffer, pos);
+            offset = largeAddresses
+                    ? static_cast<int>(ByteArrayUtils::readUint32AndAdvancePosition(buffer, pos))
+                    : ByteArrayUtils::readUint24AndAdvancePosition(buffer, pos);
             break;
         default:
             // If we come here, it means we asked for the children of a word with
@@ -138,7 +141,7 @@ const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_IS_POSSIBLY_OFFENSIVE = 0x0
         const DictionaryBigramsStructurePolicy *const bigramPolicy, const int *const codePointTable,
         NodeFlags *const outFlags, int *const outCodePointCount, int *const outCodePoint,
         int *const outProbability, int *const outChildrenPos, int *const outShortcutPos,
-        int *const outBigramPos, int *const outSiblingPos) {
+        int *const outBigramPos, int *const outSiblingPos, const bool largeAddresses) {
     int readingPos = ptNodePos;
     const NodeFlags flags = getFlagsAndAdvancePosition(dictBuf, &readingPos);
     *outFlags = flags;
@@ -147,7 +150,8 @@ const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_IS_POSSIBLY_OFFENSIVE = 0x0
     *outProbability = isTerminal(flags) ?
             readProbabilityAndAdvancePosition(dictBuf, &readingPos) : NOT_A_PROBABILITY;
     *outChildrenPos = hasChildrenInFlags(flags) ?
-            readChildrenPositionAndAdvancePosition(dictBuf, flags, &readingPos) : NOT_A_DICT_POS;
+            readChildrenPositionAndAdvancePosition(dictBuf, flags, &readingPos, largeAddresses)
+                    : NOT_A_DICT_POS;
     *outShortcutPos = NOT_A_DICT_POS;
     if (hasShortcutTargets(flags)) {
         *outShortcutPos = readingPos;

@@ -41,14 +41,15 @@ class DicNodeVector;
 // Max supported n-gram is bigram.
 class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
-    PatriciaTriePolicy(MmappedBuffer::MmappedBufferPtr mmappedBuffer)
-            : mMmappedBuffer(std::move(mmappedBuffer)),
+    PatriciaTriePolicy(MmappedBuffer::MmappedBufferPtr mmappedBuffer,
+            const bool largeAddresses = false)
+            : mMmappedBuffer(std::move(mmappedBuffer)), mLargeAddresses(largeAddresses),
               mHeaderPolicy(mMmappedBuffer->getReadOnlyByteArrayView().data(),
                       FormatUtils::detectFormatVersion(mMmappedBuffer->getReadOnlyByteArrayView())),
               mBuffer(mMmappedBuffer->getReadOnlyByteArrayView().skip(mHeaderPolicy.getSize())),
-              mBigramListPolicy(mBuffer), mShortcutListPolicy(mBuffer),
+              mBigramListPolicy(mBuffer, mLargeAddresses), mShortcutListPolicy(mBuffer),
               mPtNodeReader(mBuffer, &mBigramListPolicy, &mShortcutListPolicy,
-                      mHeaderPolicy.getCodePointTable()),
+                      mHeaderPolicy.getCodePointTable(), mLargeAddresses),
               mPtNodeArrayReader(mBuffer), mTerminalPtNodePositionsForIteratingWords(),
               mIsCorrupted(false) {}
 
@@ -154,6 +155,8 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     DISALLOW_IMPLICIT_CONSTRUCTORS(PatriciaTriePolicy);
 
     const MmappedBuffer::MmappedBufferPtr mMmappedBuffer;
+    // True for v203 dictionaries (4-byte addresses). Declared before the members that use it.
+    const bool mLargeAddresses;
     const HeaderPolicy mHeaderPolicy;
     const ReadOnlyByteArrayView mBuffer;
     const BigramListPolicy mBigramListPolicy;

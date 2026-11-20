@@ -119,6 +119,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
                 return FormatUtils::UNKNOWN_VERSION;
             case FormatUtils::VERSION_202:
                 return FormatUtils::VERSION_202;
+            case FormatUtils::VERSION_203_LARGE_ADDRESSES:
+                return FormatUtils::VERSION_203_LARGE_ADDRESSES;
             case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
                 return FormatUtils::VERSION_4_ONLY_FOR_TESTING;
             case FormatUtils::VERSION_402:

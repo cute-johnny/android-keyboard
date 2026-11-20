@@ -40,7 +40,7 @@ const BigramListReadWriteUtils::BigramFlags
 
 /* static */ bool BigramListReadWriteUtils::getBigramEntryPropertiesAndAdvancePosition(
         const ReadOnlyByteArrayView buffer, BigramFlags *const outBigramFlags,
-        int *const outTargetPtNodePos, int *const bigramEntryPos) {
+        int *const outTargetPtNodePos, int *const bigramEntryPos, const bool largeAddresses) {
     if (static_cast<int>(buffer.size()) <= *bigramEntryPos) {
         AKLOGE("Read invalid pos in getBigramEntryPropertiesAndAdvancePosition(). bufSize: %zd, "
                 "bigramEntryPos: %d.", buffer.size(), *bigramEntryPos);
@@ -51,7 +51,8 @@ const BigramListReadWriteUtils::BigramFlags
     if (outBigramFlags) {
         *outBigramFlags = bigramFlags;
     }
-    const int targetPos = getBigramAddressAndAdvancePosition(buffer, bigramFlags, bigramEntryPos);
+    const int targetPos = getBigramAddressAndAdvancePosition(buffer, bigramFlags, bigramEntryPos,
+            largeAddresses);
     if (outTargetPtNodePos) {
         *outTargetPtNodePos = targetPos;
     }
@@ -59,11 +60,11 @@ const BigramListReadWriteUtils::BigramFlags
 }
 
 /* static */ bool BigramListReadWriteUtils::skipExistingBigrams(const ReadOnlyByteArrayView buffer,
-        int *const bigramListPos) {
+        int *const bigramListPos, const bool largeAddresses) {
     BigramFlags flags;
     do {
         if (!getBigramEntryPropertiesAndAdvancePosition(buffer, &flags, 0 /* outTargetPtNodePos */,
-                bigramListPos)) {
+                bigramListPos, largeAddresses)) {
             return false;
         }
     } while(hasNext(flags));
@@ -71,7 +72,8 @@ const BigramListReadWriteUtils::BigramFlags
 }
 
 /* static */ int BigramListReadWriteUtils::getBigramAddressAndAdvancePosition(
-        const ReadOnlyByteArrayView buffer, const BigramFlags flags, int *const pos) {
+        const ReadOnlyByteArrayView buffer, const BigramFlags flags, int *const pos,
+        const bool largeAddresses) {
     int offset = 0;
     const int origin = *pos;
     switch (MASK_ATTRIBUTE_ADDRESS_TYPE & flags) {
@@ -82,7 +84,10 @@ const BigramListReadWriteUtils::BigramFlags
             offset = ByteArrayUtils::readUint16AndAdvancePosition(buffer.data(), pos);
             break;
         case FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES:
-            offset = ByteArrayUtils::readUint24AndAdvancePosition(buffer.data(), pos);
+            offset = largeAddresses
+                    ? static_cast<int>(
+                            ByteArrayUtils::readUint32AndAdvancePosition(buffer.data(), pos))
+                    : ByteArrayUtils::readUint24AndAdvancePosition(buffer.data(), pos);
             break;
     }
     if (isOffsetNegative(flags)) {

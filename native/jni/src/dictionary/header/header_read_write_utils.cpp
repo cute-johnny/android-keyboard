@@ -112,6 +112,7 @@ typedef DictionaryHeaderStructurePolicy::AttributeMap AttributeMap;
         case FormatUtils::VERSION_2:
         case FormatUtils::VERSION_201:
         case FormatUtils::VERSION_202:
+        case FormatUtils::VERSION_203_LARGE_ADDRESSES:
             // None of the static dictionaries (v2x) support writing
             return false;
         case FormatUtils::VERSION_4_ONLY_FOR_TESTING:

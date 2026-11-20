@@ -39,7 +39,8 @@ const PtNodeParams Ver2ParticiaTrieNodeReader::fetchPtNodeParamsInBufferFromPtNo
     int siblingPos = NOT_A_DICT_POS;
     PatriciaTrieReadingUtils::readPtNodeInfo(mBuffer.data(), ptNodePos, mShortcutPolicy,
             mBigramPolicy, mCodePointTable, &flags, &mergedNodeCodePointCount, mergedNodeCodePoints,
-            &probability, &childrenPos, &shortcutPos, &bigramPos, &siblingPos);
+            &probability, &childrenPos, &shortcutPos, &bigramPos, &siblingPos,
+            mLargeAddresses);
     if (mergedNodeCodePointCount <= 0) {
         AKLOGE("Empty PtNode is not allowed. Code point count: %d", mergedNodeCodePointCount);
         ASSERT(false);

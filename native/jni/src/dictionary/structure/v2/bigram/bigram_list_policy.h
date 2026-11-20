@@ -28,7 +28,8 @@ namespace latinime {
 
 class BigramListPolicy : public DictionaryBigramsStructurePolicy {
  public:
-    BigramListPolicy(const ReadOnlyByteArrayView buffer) : mBuffer(buffer) {}
+    BigramListPolicy(const ReadOnlyByteArrayView buffer, const bool largeAddresses = false)
+            : mBuffer(buffer), mLargeAddresses(largeAddresses) {}
 
     ~BigramListPolicy() {}
 
@@ -36,7 +37,7 @@ class BigramListPolicy : public DictionaryBigramsStructurePolicy {
             int *const pos) const {
         BigramListReadWriteUtils::BigramFlags flags;
         if (!BigramListReadWriteUtils::getBigramEntryPropertiesAndAdvancePosition(mBuffer, &flags,
-                outBigramPos, pos)) {
+                outBigramPos, pos, mLargeAddresses)) {
             AKLOGE("Cannot read bigram entry. bufSize: %zd, pos: %d. ", mBuffer.size(), *pos);
             *outProbability = NOT_A_PROBABILITY;
             *outHasNext = false;
@@ -47,13 +48,14 @@ class BigramListPolicy : public DictionaryBigramsStructurePolicy {
     }
 
     bool skipAllBigrams(int *const pos) const {
-        return BigramListReadWriteUtils::skipExistingBigrams(mBuffer, pos);
+        return BigramListReadWriteUtils::skipExistingBigrams(mBuffer, pos, mLargeAddresses);
     }
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(BigramListPolicy);
 
     const ReadOnlyByteArrayView mBuffer;
+    const bool mLargeAddresses;
 };
 } // namespace latinime
 #endif // LATINIME_BIGRAM_LIST_POLICY_H

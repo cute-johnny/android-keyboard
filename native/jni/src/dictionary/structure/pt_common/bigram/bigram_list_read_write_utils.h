@@ -33,7 +33,7 @@ public:
 
    static bool getBigramEntryPropertiesAndAdvancePosition(const ReadOnlyByteArrayView buffer,
            BigramFlags *const outBigramFlags, int *const outTargetPtNodePos,
-           int *const bigramEntryPos);
+           int *const bigramEntryPos, const bool largeAddresses = false);
 
    static AK_FORCE_INLINE int getProbabilityFromFlags(const BigramFlags flags) {
        return flags & MASK_ATTRIBUTE_PROBABILITY;
@@ -44,7 +44,8 @@ public:
    }
 
    // Bigrams reading methods
-   static bool skipExistingBigrams(const ReadOnlyByteArrayView buffer, int *const bigramListPos);
+   static bool skipExistingBigrams(const ReadOnlyByteArrayView buffer, int *const bigramListPos,
+           const bool largeAddresses = false);
 
 private:
    DISALLOW_IMPLICIT_CONSTRUCTORS(BigramListReadWriteUtils);
@@ -62,7 +63,7 @@ private:
    }
 
    static int getBigramAddressAndAdvancePosition(const ReadOnlyByteArrayView buffer,
-           const BigramFlags flags, int *const pos);
+           const BigramFlags flags, int *const pos, const bool largeAddresses);
 };
 } // namespace latinime
 #endif // LATINIME_BIGRAM_LIST_READ_WRITE_UTILS_H

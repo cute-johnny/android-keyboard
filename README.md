@@ -1,5 +1,7 @@
 # FUTO Keyboard
 
+> **Modified version.** This is an unofficial, non-commercial fork of FUTO Keyboard. It has been modified to support binary dictionaries larger than 16 MiB (new dictionary format version 203). See [tools/large-dict/README.md](tools/large-dict/README.md). It is not affiliated with or endorsed by FUTO. The original software is © FUTO Holdings, Inc. and is licensed under the FUTO Source First License (see [LICENSE.md](LICENSE.md)).
+
 The goal is to make a good modern keyboard that stays offline and doesn't spy on you. This keyboard is a fork of [LatinIME, The Android Open-Source Keyboard](https://android.googlesource.com/platform/packages/inputmethods/LatinIME), with significant changes made to it.
 
 Check out the [FUTO Keyboard website](https://keyboard.futo.tech/) for downloads and more information.

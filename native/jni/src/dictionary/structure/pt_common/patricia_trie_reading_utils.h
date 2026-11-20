@@ -48,8 +48,9 @@ class PatriciaTrieReadingUtils {
 
     static int readProbabilityAndAdvancePosition(const uint8_t *const buffer, int *const pos);
 
+    // largeAddresses: v203 dictionaries store the "three bytes" address type in 4 bytes.
     static int readChildrenPositionAndAdvancePosition(const uint8_t *const buffer,
-            const NodeFlags flags, int *const pos);
+            const NodeFlags flags, int *const pos, const bool largeAddresses = false);
 
     /**
      * Node Flags
@@ -111,7 +112,7 @@ class PatriciaTrieReadingUtils {
             const int *const codePointTable, NodeFlags *const outFlags,
             int *const outCodePointCount, int *const outCodePoint, int *const outProbability,
             int *const outChildrenPos, int *const outShortcutPos, int *const outBigramPos,
-            int *const outSiblingPos);
+            int *const outSiblingPos, const bool largeAddresses = false);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(PatriciaTrieReadingUtils);

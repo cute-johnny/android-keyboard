@@ -116,6 +116,7 @@ template<class DictConstants, class DictBuffers, class DictBuffersPtr, class Str
         case FormatUtils::VERSION_2:
         case FormatUtils::VERSION_201:
         case FormatUtils::VERSION_202:
+        case FormatUtils::VERSION_203_LARGE_ADDRESSES:
             AKLOGE("Given path is a directory but the format is version 2xx. path: %s", path);
             break;
         case FormatUtils::VERSION_402: {
@@ -183,6 +184,10 @@ template<class DictConstants, class DictBuffers, class DictBuffersPtr, class Str
         case FormatUtils::VERSION_202:
             return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(
                     new PatriciaTriePolicy(std::move(mmappedBuffer)));
+        case FormatUtils::VERSION_203_LARGE_ADDRESSES:
+            return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(
+                    new PatriciaTriePolicy(std::move(mmappedBuffer),
+                            true /* largeAddresses */));
         case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
         case FormatUtils::VERSION_402:
         case FormatUtils::VERSION_403:

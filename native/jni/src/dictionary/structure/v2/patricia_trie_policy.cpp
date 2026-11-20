@@ -165,7 +165,7 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
                 // Here comes the tricky part. First, read the children position.
                 const int childrenPos = PatriciaTrieReadingUtils
                         ::readChildrenPositionAndAdvancePosition(mBuffer.data(), flags,
-                                &currentPos);
+                                &currentPos, mLargeAddresses);
                 if (childrenPos > ptNodePos) {
                     // If the children pos is greater than the position, it means the previous
                     // PtNode, which position is stored in lastCandidatePtNodePos, was the right
@@ -218,7 +218,7 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
                                 &lastCandidatePtNodePos);
                     }
                     pos = PatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(
-                            mBuffer.data(), lastFlags, &lastCandidatePtNodePos);
+                            mBuffer.data(), lastFlags, &lastCandidatePtNodePos, mLargeAddresses);
                     break;
                 } else {
                     // Here is a little tricky part: we come here if we found out that all children
@@ -230,7 +230,7 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
                     // ready to start the next one.
                     if (PatriciaTrieReadingUtils::hasChildrenInFlags(flags)) {
                         PatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(
-                                mBuffer.data(), flags, &pos);
+                                mBuffer.data(), flags, &pos, mLargeAddresses);
                     }
                     if (PatriciaTrieReadingUtils::hasShortcutTargets(flags)) {
                         mShortcutListPolicy.skipAllShortcuts(&pos);
@@ -253,7 +253,7 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
                 // our pos is after the end of this PtNode, at the start of the next one.
                 if (PatriciaTrieReadingUtils::hasChildrenInFlags(flags)) {
                     PatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(
-                            mBuffer.data(), flags, &pos);
+                            mBuffer.data(), flags, &pos, mLargeAddresses);
                 }
                 if (PatriciaTrieReadingUtils::hasShortcutTargets(flags)) {
                     mShortcutListPolicy.skipAllShortcuts(&pos);
@@ -413,7 +413,7 @@ int PatriciaTriePolicy::createAndGetLeavingChildNode(const DicNode *const dicNod
     PatriciaTrieReadingUtils::readPtNodeInfo(mBuffer.data(), ptNodePos, &mShortcutListPolicy,
             &mBigramListPolicy, codePointTable, &flags, &mergedNodeCodePointCount,
             mergedNodeCodePoints, &probability, &childrenPos, &shortcutPos, &bigramPos,
-            &siblingPos);
+            &siblingPos, mLargeAddresses);
     // Skip PtNodes don't start with Unicode code point because they represent non-word information.
         if (mergedNodeCodePointCount > 0 && CharUtils::isInUnicodeSpace(mergedNodeCodePoints[0])) {
         const int wordId = PatriciaTrieReadingUtils::isTerminal(flags) ? ptNodePos : NOT_A_WORD_ID;

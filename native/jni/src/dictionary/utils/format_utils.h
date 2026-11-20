@@ -37,6 +37,8 @@ class FormatUtils {
         VERSION_2 = 2,
         VERSION_201 = 201,
         VERSION_202 = 202,
+        // v202 layout with 4-byte addresses (for dictionaries over 16 MiB).
+        VERSION_203_LARGE_ADDRESSES = 203,
         VERSION_4_ONLY_FOR_TESTING = 399,
         VERSION_402 = 402,
         VERSION_403 = 403,
