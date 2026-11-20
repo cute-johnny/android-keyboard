@@ -12,9 +12,10 @@ v203 files as an unknown version instead of misreading them.
 
 ## Building a v203 dictionary
 
-`src/` contains two patched AOSP encoder classes (Apache-2.0, from
-android.googlesource.com LatinIME master). They are compiled and put on the
-classpath ahead of the stock `dicttool_aosp.jar`:
+`src/` contains two AOSP encoder classes (Apache-2.0, from android.googlesource.com
+LatinIME master). Only `BinaryDictEncoderUtils.java` is modified. `Ver2DictEncoder.java`
+is unchanged and is compiled alongside it. Both are put on the classpath ahead of the
+stock `dicttool_aosp.jar`:
 
 ```sh
 # dicttool_aosp.jar: https://codeberg.org/Helium314/aosp-dictionaries (dicttool_aosp.jar)

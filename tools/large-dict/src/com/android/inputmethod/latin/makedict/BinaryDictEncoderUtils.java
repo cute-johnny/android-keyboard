@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
+/*
+ * MODIFIED FILE: changed from AOSP LatinIME (master) to add a large-address mode
+ * (-Ddicttool.large=true -> dictionary format version 203 with 4-byte pointers) and to refuse
+ * writing corrupt v202 dictionaries over 16 MiB. See tools/large-dict/README.md.
+ */
+
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
